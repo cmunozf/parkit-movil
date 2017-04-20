@@ -5,6 +5,7 @@ using UnityEngine;
 public class llenarParqueadero : MonoBehaviour {
 
 	public GameObject[] espaciosLlenos;
+
 	public GameObject vacio;
 
 	private Vector3 posicionInicial;
@@ -17,6 +18,9 @@ public class llenarParqueadero : MonoBehaviour {
 	private float axv = 1.7f;
 	private float ayv = -2f;
 	private bool hayVertical = false;
+
+	public string json;
+	public ParqueaderoData parqueaderoData;
 
 	// Use this for initialization
 
@@ -33,86 +37,115 @@ public class llenarParqueadero : MonoBehaviour {
 	 */
 
 	void Start () {
+		
 		posicionInicial = transform.position;
 		posicionActual = posicionInicial;
 
-		ArrayList matrix = new ArrayList ();
-		string[] lista1 = {"S","S","S","S","S","S","S","S","S","S"};
-		string[] lista2 = {"UF","UE","UF","UF","S","RE","S","UF","UF","UE"};
-		string[] lista3 = {"DF","DF","DF","DF","S","RF","S","DF","DF","DF"};
-		string[] lista4 = {"S","S","S","S","S","S","S","S","S","S"};
-		string[] lista5 = {"UF","S","UE","UF","UF","UF","S","UE","UF","UF"};
+		string url = "https://intense-eyrie-97315.herokuapp.com/parkings/parking_info";
+		WWW www = new WWW(url);
+		StartCoroutine(WaitForRequest(www));
 
-		matrix.Add (lista1);
-		matrix.Add (lista2);
-		matrix.Add (lista3);
-		matrix.Add (lista4);
-		matrix.Add (lista5);
+		json = "{\n  \"parqueaderos\":\n  [\n    {\n    \"x\":0,\n    \"y\":0,\n    \"estado\":\"F\",\n    \"direccion\":\"R\"\n  },\n  {\n    \"x\":1,\n    \"y\":0,\n    \"estado\":\"S\",\n    \"direccion\":\"R\"\n  },\n   {\n    \"x\":2,\n    \"y\":0,\n    \"estado\":\"F\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":0,\n    \"y\":1,\n    \"estado\":\"F\",\n    \"direccion\":\"R\"\n  },\n  {\n    \"x\":1,\n    \"y\":1,\n    \"estado\":\"S\",\n    \"direccion\":\"R\"\n  }\n  ]\n}";
+		parqueaderoData = JsonUtility.FromJson<ParqueaderoData> (json);
 
-		for(int i =0;i<(matrix.Count);i++){
-			string[] lista = (string[]) matrix [i];
-			for(int j=0;j<(lista.Length);j++){
-				hayVertical = false;
-				string inf = lista [j];
-				string pos1 = "";
-				string pos2 = "";
 
-				//Si en la primera posicion hay una S, no hay segundo argumento
-				//De lo contrario si hay segundo argumento
-				if(inf.Substring(0,1).Equals("S")){
-					pos1 = "S";
-					posicionActual.x += espaciox;
-				}else {
-					pos1 = inf.Substring (0, 1);
-					pos2 = inf.Substring (1);
+		for(int i =0;i<(parqueaderoData.parqueaderos.Count);i++){
+			Parqueadero p =	parqueaderoData.parqueaderos [i];
+			string dir = p.direccion;
+			string est = p.estado;
 
-					//Miramos la orientacion del parqueadero, luego miramos si esta lleno o vacio
-					if(pos1.Equals("U")){
-						if (pos2.Equals ("F")) {
-							Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.identity,transform);	
-						} else {
-							Instantiate (vacio,posicionActual,Quaternion.identity,transform);							
-						}
-						hayVertical = true;
-						posicionActual.x += axh;
-					}else if(pos1.Equals("R")){
-						posicionActual.x += 0.28f;
-						if (pos2.Equals ("F")) {
-							Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.Euler(0,0,-90),transform);							
-						} else {
-							Instantiate (vacio,posicionActual,Quaternion.Euler(0,0,-90),transform);
-						}
-						posicionActual.x += axv;
-					}else if(pos1.Equals("D")){
-						if (pos2.Equals ("F")) {
-							Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.Euler(0,0,180),transform);
-						} else {
-							Instantiate (vacio,posicionActual,Quaternion.Euler(0,0,180),transform);
-						}
-						hayVertical = true;
-						posicionActual.x += axh;
-					}else if(pos1.Equals("L")){
-						if (pos2.Equals ("F")) {
-							Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.Euler(0,0,90),transform);
-						} else {
-							Instantiate (vacio,posicionActual,Quaternion.Euler(0,0,90),transform);
-						}
-						posicionActual.x += axv;
+			if(est.Equals("S")){
+				posicionActual.x += espaciox;
+			}else {
+				//Miramos la orientacion del parqueadero, luego miramos si esta lleno o vacio
+				if(dir.Equals("U")){
+					if (est.Equals ("F")) {
+						Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.identity,transform);	
+					} else {
+						Instantiate (vacio,posicionActual,Quaternion.identity,transform);							
 					}
+					posicionActual.x += axh;
+					hayVertical = true;
+				}else if(dir.Equals("R")){
+					posicionActual.x += 0.28f;
+					if (est.Equals ("F")) {
+						Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.Euler(0,0,-90),transform);							
+					} else {
+						Instantiate (vacio,posicionActual,Quaternion.Euler(0,0,-90),transform);
+					}
+					posicionActual.x += axv;
+				}else if(dir.Equals("D")){
+					if (est.Equals ("F")) {
+						Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.Euler(0,0,180),transform);
+					} else {
+						Instantiate (vacio,posicionActual,Quaternion.Euler(0,0,180),transform);
+					}
+					posicionActual.x += axh;
+					hayVertical = true;
+				}else if(dir.Equals("L")){
+					if (est.Equals ("F")) {
+						Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.Euler(0,0,90),transform);
+					} else {
+						Instantiate (vacio,posicionActual,Quaternion.Euler(0,0,90),transform);
+					}
+					posicionActual.x += axv;
 				}
-			}	
-			if (hayVertical) {
-				posicionActual.y += ayv;
-				
-			} else {
-				posicionActual.y += ayh;
 			}
-			posicionActual.x = posicionInicial.x;
+
+			int contador = i;
+			contador++;
+			if(parqueaderoData.parqueaderos.Count>contador){
+				Parqueadero p1 =	parqueaderoData.parqueaderos [contador];
+				if(p1.y>p.y){
+					posicionActual.x = posicionInicial.x;
+					if (hayVertical) {
+						posicionActual.y += ayv;						
+					} else {
+						posicionActual.y += ayh;						
+					}
+					hayVertical = false;
+				}				
+			}
+			
 		}
+	}
+
+	IEnumerator WaitForRequest(WWW www)
+	{
+		yield return www;
+
+		// check for errors
+		if (www.error == null)
+		{
+			json = www.data;
+			Debug.Log("WWW Ok!: " + www.data);
+		} else {
+			Debug.Log("WWW Error: "+ www.error);
+		}    
+	}
+
+	void generar(){
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+	[System.Serializable]
+	public class Parqueadero
+	{
+		public int x;
+		public int y;
+		public string estado;
+		public string direccion;
+
+	}
+	[System.Serializable]
+	public class ParqueaderoData
+	{
+		public List<Parqueadero> parqueaderos;
+	}
 }
+	
