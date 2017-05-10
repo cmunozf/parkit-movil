@@ -52,6 +52,7 @@
      <Compile Include="Assets\Scrips\MainScene\logoutButton.cs" />
      <Compile Include="Assets\Scrips\MainScene\parkingButton.cs" />
      <Compile Include="Assets\Scrips\MainScene\zoneButton.cs" />
+     <Compile Include="Assets\Scrips\ParkitScene\backButton.cs" />
      <Compile Include="Assets\Scrips\ParkitScene\llenarParqueadero.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
