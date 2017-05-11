@@ -1,14 +1,17 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scrips\LoginScene\loginButton.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scrips\ParkitScene\llenarParqueadero.cs">
     <Files>
-      <File FileName="Assets\Scrips\LoginScene\loginButton.cs" Line="12" Column="22" />
-      <File FileName="Assets\Scrips\MainScene\zoneButton.cs" Line="22" Column="25" />
+      <File FileName="Assets\Scrips\LoginScene\loginButton.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scrips\MainScene\zoneButton.cs" Line="20" Column="3" />
       <File FileName="Assets\Scrips\MainScene\parkingButton.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scrips\MainScene\loadUser.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scrips\LoginScene\parameters.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scrips\MainScene\loadUser.cs" Line="11" Column="3" />
+      <File FileName="Assets\Scrips\LoginScene\parameters.cs" Line="8" Column="32" />
       <File FileName="Assets\Scrips\MainScene\logoutButton.cs" Line="1" Column="1" />
       <File FileName="Assets\Scrips\ParkitScene\backButton.cs" Line="9" Column="35" />
+      <File FileName="Assets\Scrips\ParkitScene\llenarParqueadero.cs" Line="135" Column="3" />
+      <File FileName="Assets\Scrips\ParkitScene\upTime.cs" Line="16" Column="13" />
+      <File FileName="Assets\Scrips\ParkitScene\downTime.cs" Line="7" Column="19" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -5,6 +5,7 @@ using UnityEngine;
 public class parameters : MonoBehaviour {
 
 	private static string id;
+	private static float time = 5f;
 	// Use this for initialization
 	void Start () {
 		
@@ -25,5 +26,13 @@ public class parameters : MonoBehaviour {
 
 	public static void setId(string id1) {
 		id = id1;
+	}
+
+	public static float getTime() {
+		return time;
+	}
+
+	public static void setTime(float time1) {
+		time = time1;
 	}
 }

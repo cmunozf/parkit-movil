@@ -37,16 +37,16 @@ public class llenarParqueadero : MonoBehaviour {
 	 */
 
 	void Start () {
-		
+		Llenar ();		
+	}
+
+	void Llenar(){
 		posicionInicial = transform.position;
 		posicionActual = posicionInicial;
 
 		string url = "https://intense-eyrie-97315.herokuapp.com/parkings/parking_info";
 		WWW www = new WWW(url);
 		StartCoroutine(WaitForRequest(www));
-
-		//json = "{\n  \"parqueaderos\":\n  [\n    {\n    \"x\":0,\n    \"y\":0,\n    \"estado\":\"E\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":1,\n    \"y\":0,\n    \"estado\":\"F\",\n    \"direccion\":\"U\"\n  },\n   {\n    \"x\":2,\n    \"y\":0,\n    \"estado\":\"F\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":3,\n    \"y\":0,\n    \"estado\":\"F\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":4,\n    \"y\":0,\n    \"estado\":\"E\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":5,\n    \"y\":0,\n    \"estado\":\"F\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":6,\n    \"y\":0,\n    \"estado\":\"S\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":7,\n    \"y\":0,\n    \"estado\":\"F\",\n    \"direccion\":\"L\"\n  },\n  {\n    \"x\":0,\n    \"y\":1,\n    \"estado\":\"F\",\n    \"direccion\":\"D\"\n  },\n  {\n    \"x\":1,\n    \"y\":1,\n    \"estado\":\"F\",\n    \"direccion\":\"D\"\n  },\n   {\n    \"x\":2,\n    \"y\":1,\n    \"estado\":\"F\",\n    \"direccion\":\"D\"\n  },\n  {\n    \"x\":3,\n    \"y\":1,\n    \"estado\":\"E\",\n    \"direccion\":\"D\"\n  },\n  {\n    \"x\":4,\n    \"y\":1,\n    \"estado\":\"F\",\n    \"direccion\":\"D\"\n  },\n  {\n    \"x\":5,\n    \"y\":1,\n    \"estado\":\"F\",\n    \"direccion\":\"D\"\n  },\n  {\n    \"x\":6,\n    \"y\":1,\n    \"estado\":\"S\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":7,\n    \"y\":1,\n    \"estado\":\"E\",\n    \"direccion\":\"L\"\n  },\n  {\n    \"x\":0,\n    \"y\":2,\n    \"estado\":\"S\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":1,\n    \"y\":2,\n    \"estado\":\"S\",\n    \"direccion\":\"U\"\n  },\n   {\n    \"x\":2,\n    \"y\":2,\n    \"estado\":\"S\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":3,\n    \"y\":2,\n    \"estado\":\"S\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":4,\n    \"y\":2,\n    \"estado\":\"S\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":5,\n    \"y\":2,\n    \"estado\":\"S\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":6,\n    \"y\":2,\n    \"estado\":\"S\",\n    \"direccion\":\"U\"\n  },\n  {\n    \"x\":0,\n    \"y\":3,\n    \"estado\":\"F\",\n    \"direccion\":\"D\"\n  },\n  {\n    \"x\":1,\n    \"y\":3,\n    \"estado\":\"F\",\n    \"direccion\":\"D\"\n  },\n   {\n    \"x\":2,\n    \"y\":3,\n    \"estado\":\"F\",\n    \"direccion\":\"D\"\n  },\n  {\n    \"x\":3,\n    \"y\":3,\n    \"estado\":\"E\",\n    \"direccion\":\"D\"\n  },\n  {\n    \"x\":4,\n    \"y\":3,\n    \"estado\":\"F\",\n    \"direccion\":\"D\"\n  },\n  {\n    \"x\":5,\n    \"y\":3,\n    \"estado\":\"E\",\n    \"direccion\":\"R\"\n  }\n  ]\n}";
-
 	}
 
 	IEnumerator WaitForRequest(WWW www)
@@ -57,14 +57,17 @@ public class llenarParqueadero : MonoBehaviour {
 		if (www.error == null)
 		{
 			json = www.data;
-			generar ();
+			foreach (Transform child in transform) {
+				GameObject.Destroy (child.gameObject);
+			}
+			Generar ();
 			Debug.Log("WWW Ok!: " + www.data);
 		} else {
 			Debug.Log("WWW Error: "+ www.error);
-		}    
+		} 
 	}
 
-	void generar(){
+	void Generar(){
 		parqueaderoData = JsonUtility.FromJson<ParqueaderoData> (json);
 		for(int i =0;i<(parqueaderoData.parqueaderos.Count);i++){
 			Parqueadero p =	parqueaderoData.parqueaderos [i];
@@ -124,7 +127,12 @@ public class llenarParqueadero : MonoBehaviour {
 				}				
 			}
 
-		}		
+		}	
+
+		float time = parameters.getTime ();
+		Debug.Log ("Invoke en: "+ time);
+		Invoke ("Llenar",time);
+
 	}
 	
 	// Update is called once per frame
