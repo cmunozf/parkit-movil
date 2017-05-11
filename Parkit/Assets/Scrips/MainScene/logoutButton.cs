@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class logoutButton : MonoBehaviour {
 
@@ -16,6 +17,6 @@ public class logoutButton : MonoBehaviour {
 
 	void OnMouseDown()
 	{
-		Application.LoadLevel("LoginScene");
+		SceneManager.LoadScene (0);
 	}
 }

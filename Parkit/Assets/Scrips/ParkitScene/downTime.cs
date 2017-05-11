@@ -10,7 +10,7 @@ public class downTime : MonoBehaviour {
 	{
 		string time = timeFloat.GetComponent<TextMesh> ().text;
 		float timeF = float.Parse(time);
-		if(timeF>3){
+		if(timeF>4){
 			timeF = timeF - 1f;			
 		}
 		timeFloat.GetComponent<TextMesh> ().text = timeF + "";

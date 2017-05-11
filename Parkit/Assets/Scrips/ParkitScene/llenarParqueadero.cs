@@ -44,7 +44,7 @@ public class llenarParqueadero : MonoBehaviour {
 		posicionInicial = transform.position;
 		posicionActual = posicionInicial;
 
-		string url = "https://intense-eyrie-97315.herokuapp.com/parkings/parking_info";
+		string url = "https://intense-eyrie-97315.herokuapp.com/parkings/parking_info"; 
 		WWW www = new WWW(url);
 		StartCoroutine(WaitForRequest(www));
 	}
@@ -56,15 +56,25 @@ public class llenarParqueadero : MonoBehaviour {
 		// check for errors
 		if (www.error == null)
 		{
-			json = www.data;
+			json = www.text;
 			foreach (Transform child in transform) {
 				GameObject.Destroy (child.gameObject);
 			}
 			Generar ();
-			Debug.Log("WWW Ok!: " + www.data);
+			Debug.Log("WWW Ok!: " + www.text);
+
 		} else {
 			Debug.Log("WWW Error: "+ www.error);
 		} 
+
+		//Se mira el tiempo de actualizacion que el usuario requiera, a este se le resta un segundo
+		//Para que un segundo antes se vaya haciendo la peticion del nuevo parqueadero (Ya que 
+		// este es un poco lento al devolver la peticion)
+		float time = parameters.getTime ();
+		time = time - 1f;
+		Debug.Log ("Invoke en: "+ time + "Time: "+System.DateTime.Now);
+		CancelInvoke ();
+		Invoke ("Llenar",time);
 	}
 
 	void Generar(){
@@ -128,10 +138,6 @@ public class llenarParqueadero : MonoBehaviour {
 			}
 
 		}	
-
-		float time = parameters.getTime ();
-		Debug.Log ("Invoke en: "+ time);
-		Invoke ("Llenar",time);
 
 	}
 	

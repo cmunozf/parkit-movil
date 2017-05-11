@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class loginButton : MonoBehaviour {
 
@@ -15,6 +16,6 @@ public class loginButton : MonoBehaviour {
 	{
 		id = inputFieldId.text;
 		parameters.setId(id);
-		Application.LoadLevel("MainScene");
+		SceneManager.LoadScene(1);
 	}
 }
