@@ -19,8 +19,10 @@ public class llenarParqueadero : MonoBehaviour {
 	private float ayv = -2f;
 	private bool hayVertical = false;
 
-	public string json;
-	public ParqueaderoData parqueaderoData;
+	public string jsonAnterior = "";
+	public string jsonNuevo = "";
+	public ParqueaderoData parqueaderoDataNuevo = null;
+	public ParqueaderoData parqueaderoDataAnterior = null;
 
 	// Use this for initialization
 
@@ -56,10 +58,12 @@ public class llenarParqueadero : MonoBehaviour {
 		// check for errors
 		if (www.error == null)
 		{
-			json = www.text;
-			foreach (Transform child in transform) {
-				GameObject.Destroy (child.gameObject);
-			}
+			jsonNuevo = www.text;
+
+			//foreach (Transform child in transform) {
+			//	GameObject.Destroy (child.gameObject);
+			//}
+
 			Generar ();
 			Debug.Log("WWW Ok!: " + www.text);
 
@@ -78,45 +82,69 @@ public class llenarParqueadero : MonoBehaviour {
 	}
 
 	void Generar(){
-		parqueaderoData = JsonUtility.FromJson<ParqueaderoData> (json);
-		for(int i =0;i<(parqueaderoData.parqueaderos.Count);i++){
-			Parqueadero p =	parqueaderoData.parqueaderos [i];
+		parqueaderoDataNuevo = JsonUtility.FromJson<ParqueaderoData> (jsonNuevo);
+		if(!jsonAnterior.Equals("")){
+			parqueaderoDataAnterior = JsonUtility.FromJson<ParqueaderoData> (jsonAnterior);
+		}
+
+		for(int i =0;i<(parqueaderoDataNuevo.parqueaderos.Count);i++){
+			Parqueadero p =	parqueaderoDataNuevo.parqueaderos [i];
 			string dir = p.direccion;
 			string est = p.estado;
+			string x = p.x.ToString();
+			string y = p.y.ToString();
+
+			Parqueadero pAnterior;
+			string dirAnterior = "";
+			string estAnterior = "";
+			if(!jsonAnterior.Equals("")){
+				pAnterior = parqueaderoDataAnterior.parqueaderos [i];
+				dirAnterior = pAnterior.direccion;
+				estAnterior = pAnterior.estado;
+			}
 
 			if(est.Equals("S")){
+				GameObject.Destroy (GameObject.Find(x+y));
 				posicionActual.x += espaciox;
 			}else {
 				//Miramos la orientacion del parqueadero, luego miramos si esta lleno o vacio
 				if(dir.Equals("U")){
-					if (est.Equals ("F")) {
-						Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.identity,transform);	
-					} else {
-						Instantiate (vacio,posicionActual,Quaternion.identity,transform);							
-					}
+					if(!dirAnterior.Equals(dir) || !estAnterior.Equals(est)){
+						if (est.Equals ("F")) {
+							instanciarLleno (0,x,y);
+						} else {
+							instanciarVacio (0,x,y);						
+						}														
+					}	
 					posicionActual.x += axh;
 					hayVertical = true;
 				}else if(dir.Equals("R")){
 					posicionActual.x += 0.28f;
-					if (est.Equals ("F")) {
-						Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.Euler(0,0,-90),transform);							
-					} else {
-						Instantiate (vacio,posicionActual,Quaternion.Euler(0,0,-90),transform);
+					if (!dirAnterior.Equals (dir) || !estAnterior.Equals (est)) {
+						if (est.Equals ("F")) {
+							instanciarLleno (-90,x,y);
+						} else {
+							instanciarVacio (-90,x,y);
+						}
 					}
 					posicionActual.x += axv;
 				}else if(dir.Equals("D")){
-					if (est.Equals ("F")) {
-						Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.Euler(0,0,180),transform);
-					} else {
-						Instantiate (vacio,posicionActual,Quaternion.Euler(0,0,180),transform);
+					if (!dirAnterior.Equals (dir) || !estAnterior.Equals (est)) {
+						if (est.Equals ("F")) {
+							instanciarLleno (180,x,y);
+						} else {
+							instanciarVacio (180,x,y);
+						}
 					}
 					posicionActual.x += axh;
 					hayVertical = true;
 				}else if(dir.Equals("L")){
-					if (est.Equals ("F")) {
-						Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.Euler(0,0,90),transform);
-					} else {
-						Instantiate (vacio,posicionActual,Quaternion.Euler(0,0,90),transform);
+					if (!dirAnterior.Equals (dir) || !estAnterior.Equals (est)) {
+						if (est.Equals ("F")) {
+							instanciarLleno (90,x,y);
+						} else {
+							instanciarVacio (90,x,y);
+						}
 					}
 					posicionActual.x += axv;
 				}
@@ -124,8 +152,8 @@ public class llenarParqueadero : MonoBehaviour {
 
 			int contador = i;
 			contador++;
-			if(parqueaderoData.parqueaderos.Count>contador){
-				Parqueadero p1 =	parqueaderoData.parqueaderos [contador];
+			if(parqueaderoDataNuevo.parqueaderos.Count>contador){
+				Parqueadero p1 =	parqueaderoDataNuevo.parqueaderos [contador];
 				if(p1.y>p.y){
 					posicionActual.x = posicionInicial.x;
 					if (hayVertical) {
@@ -137,8 +165,23 @@ public class llenarParqueadero : MonoBehaviour {
 				}				
 			}
 
-		}	
+		}
 
+		jsonAnterior = jsonNuevo;
+
+	}
+		
+	public void instanciarLleno(int angulo,string x,string y){
+		GameObject.Destroy (GameObject.Find(x+y));
+		GameObject intancia = Instantiate (espaciosLlenos[Random.Range(0,espaciosLlenos.Length)],posicionActual,Quaternion.Euler(0,0,angulo),transform);			
+		intancia.name = x + y;
+
+	}
+
+	public void instanciarVacio(int angulo, string x, string y){
+		GameObject.Destroy (GameObject.Find(x+y));
+		GameObject intancia = Instantiate (vacio,posicionActual,Quaternion.Euler(0,0,angulo),transform);	
+		intancia.name = x + y;
 	}
 	
 	// Update is called once per frame
